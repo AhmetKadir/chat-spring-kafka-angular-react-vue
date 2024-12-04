@@ -21,9 +21,15 @@
         "type": "string"
       },
       {
-        "name": "date",
-        "type": "long",
-        "logicalType": "timestamp-millis"
+        "name": "roomId",
+        "type": "string"
+      },
+      {
+        "name": "createdDate",
+        "type": {
+            "type": "long",
+            "logicalType": "timestamp-millis"
+        }
       }
   ]
 }

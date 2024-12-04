@@ -1,4 +1,4 @@
-package com.wandrillecorp.chatapi.infrastructure.repository.message;
+package com.wandrillecorp.chatapi.repository.message;
 
 import com.wandrillecorp.chatapi.domain.message.Message;
 import org.springframework.data.mongodb.repository.MongoRepository;

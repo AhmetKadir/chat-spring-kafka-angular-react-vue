@@ -1,16 +1,16 @@
-package com.wandrillecorp.chatapi.api.user;
+package com.wandrillecorp.chatapi.dto;
 
 
 import jakarta.validation.constraints.NotNull;
 
-public class UserCreatedCommand {
+public class UserCreateDto {
     @NotNull
     private String name;
 
-    public UserCreatedCommand() {
+    public UserCreateDto() {
     }
 
-    public UserCreatedCommand(String name) {
+    public UserCreateDto(String name) {
         this.name = name;
     }
 

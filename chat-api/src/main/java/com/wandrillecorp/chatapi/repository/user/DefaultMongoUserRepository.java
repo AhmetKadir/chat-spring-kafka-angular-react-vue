@@ -1,4 +1,4 @@
-package com.wandrillecorp.chatapi.infrastructure.repository.user;
+package com.wandrillecorp.chatapi.repository.user;
 
 import com.wandrillecorp.chatapi.domain.user.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface DefaultMongoUserRepository extends MongoRepository<User, String> {
-    User findByName(String name);
-
-    Optional<User> findById(String id);
+//    User findByName(String name);
+//
+//    Optional<User> findById(String id);
 }

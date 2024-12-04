@@ -1,49 +1,22 @@
 package com.wandrillecorp.chatapi.domain.message;
 
-import com.wandrillecorp.chatapi.domain.ValueObject;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
-public class Message extends ValueObject implements Serializable {
+@Data
+@Accessors(chain = true)
+public class Message implements Serializable {
+
+    @Id
     private String id;
+
     private String userName;
     private String userId;
     private String text;
-    private Date date;
-
-    public Message() {
-    }
-
-    public Message(String id, String userName, String userId, String text, Date date) {
-        this.id = id;
-        this.userName = userName;
-        this.userId = userId;
-        this.text = text;
-        this.date = date;
-    }
-
-    public Message(String userName, String userId, String text, Date date) {
-        this(null, userName, userId, text, date);
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public String getId() {
-        return id;
-    }
+    private Instant createdDate;
+    private String roomId;
 }

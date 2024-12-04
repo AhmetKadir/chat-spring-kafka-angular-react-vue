@@ -1,21 +1,20 @@
 package com.wandrillecorp.chatapi.domain.user;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
+import java.time.Instant;
 
+@Data
+@Accessors(chain = true)
 public class User implements Serializable {
+
+    @Id
     private String id;
+
     private String name;
-
-    public User(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getId() {
-        return id;
-    }
+    private String roomId;
+    private Instant createdDate;
 }

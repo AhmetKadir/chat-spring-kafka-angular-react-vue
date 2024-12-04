@@ -19,8 +19,15 @@ public class KafkaEmission implements ChatMessageBus {
 
     @Override
     public void emit(Message message) {
-        MessageAvro messageAvro = new MessageAvro(message.getId(), message.getText(), message.getUserId(),
-                message.getUserName(),  message.getDate().getTime());
+        MessageAvro messageAvro = new MessageAvro(
+                message.getId(),
+                message.getText(),
+                message.getUserId(),
+                message.getUserName(),
+                message.getRoomId(),
+                message.getCreatedDate()
+        );
+
         kafkaTemplate.send("chat", messageAvro);
     }
 }
