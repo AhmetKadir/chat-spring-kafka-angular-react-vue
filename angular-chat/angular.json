@@ -66,18 +66,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-chat:build"
+            "buildTarget": "angular-chat:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular-chat:build:production"
+              "buildTarget": "angular-chat:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-chat:build"
+            "buildTarget": "angular-chat:build"
           }
         },
         "test": {
