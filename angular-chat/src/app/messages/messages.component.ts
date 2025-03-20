@@ -8,9 +8,10 @@ import { environment } from '../../environments/environment';
 import { Client } from '@stomp/stompjs';
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.component.html',
-  styleUrls: ['./messages.component.scss']
+    selector: 'app-messages',
+    templateUrl: './messages.component.html',
+    styleUrls: ['./messages.component.scss'],
+    standalone: false
 })
 export class MessagesComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() user: User;
