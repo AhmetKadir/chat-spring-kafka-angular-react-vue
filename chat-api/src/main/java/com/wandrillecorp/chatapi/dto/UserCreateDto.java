@@ -2,7 +2,9 @@ package com.wandrillecorp.chatapi.dto;
 
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
+@Getter
 public class UserCreateDto {
     @NotNull
     private String name;
@@ -14,7 +16,4 @@ public class UserCreateDto {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
 }

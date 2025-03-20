@@ -52,6 +52,5 @@ public class UserService {
         } else {
             return ResponseEntity.notFound().build();
         }
-
     }
 }

@@ -24,12 +24,12 @@ public class MessageController {
         return messageService.getAllMessages();
     }
 
-    @GetMapping("/{roomId}")
+    @GetMapping("room/{roomId}")
     public List<Message> getMessagesByRoom(@PathVariable String roomId) throws Exception {
         return messageService.getAllMessagesByRoom(roomId);
     }
 
-    @PostMapping("/new")
+    @PostMapping("new")
     public void addNewMessage(
             @Valid @RequestBody MessageCreateDto command) {
         try {
