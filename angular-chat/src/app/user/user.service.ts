@@ -13,7 +13,7 @@ export class UserService {
   constructor(private http: HttpClient) {
   }
 
-  getUser(name: string): Promise<User> {
-    return this.http.post<User>(`${this.server}/users`, {name}).toPromise();
+  getUser(name: string) {
+    return this.http.post<User>(`${this.server}/users`, {name});
   }
 }

@@ -1,0 +1,29 @@
+<div class="application-component" data-cy="application-component">
+  <div class="application-container">
+    <ng-container *ngIf="!user">
+      <div class="userForm" data-cy="user-form">
+        <h1 class="marginBottom15">
+          Welcome to the chat
+        </h1>
+        <div class="marginBottom15">
+          What is your name?
+        </div>
+        <form (ngSubmit)="activateUser()">
+          <input
+            #userInput
+            [formControl]="userName"
+            class="marginBottom15"
+            data-cy="user-input"
+            placeholder="Enter your name"
+            type="text">
+          <button
+            [disabled]="!userName.value.trim() || isLoading"
+            data-cy="activate-button"
+            type="submit">
+            {{ isLoading ? 'Activating...' : "Let's go!" }}
+          </button>
+        </form>
+      </div>
+    </ng-container>
+  </div>
+</div>

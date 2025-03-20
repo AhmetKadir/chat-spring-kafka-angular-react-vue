@@ -1,0 +1,35 @@
+<!-- Room creation section -->
+<section class="room-creation">
+  <p>Rooms Available</p>
+  <button
+    type="button"
+    (click)="createRoom()"
+    data-cy="create-room"
+    class="btn btn-primary">
+    Create New Room
+  </button>
+</section>
+
+<!-- Rooms list -->
+<div class="rooms-container">
+  <div
+    *ngFor="let room of rooms"
+    class="room-card"
+    data-cy="room"
+  >
+    <div class="room-details">
+      <h3 class="room-name">{{ room.name }}</h3>
+      <p class="room-capacity">
+        {{ room.numberOfUsers }} / {{ room.ROOM_CAPACITY }} users
+      </p>
+    </div>
+    <button
+      type="button"
+      (click)="enterRoom(room.id)"
+      data-cy="join-room"
+      class="btn btn-join"
+    >
+      Join Room
+    </button>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+.room-creation {
+  margin-bottom: 1.5rem;
+}
+
+.rooms-container {
+  display: grid;
+  gap: 1rem;
+}
+
+.room-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.room-details {
+  flex-grow: 1;
+}
+
+.room-name {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.room-capacity {
+  margin: 0.5rem 0 0;
+  color: #666;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.btn-join {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}

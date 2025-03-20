@@ -6,6 +6,8 @@ import { User } from "../user/user.interface";
 import { MessagesComponent } from "./messages.component";
 import { Message } from "./message.interface";
 import { Subject } from "rxjs";
+
+
 import { MountResponse } from "cypress/angular";
 
 const user: User = {
@@ -18,6 +20,7 @@ const messages: Message[] = [
     id: "id_1",
     text: "text_1",
     userId: user.id,
+    roomId: "room_1",
     userName: user.name,
     date: new Date(2023, 1, 2, 15, 5, 5)
   },
@@ -25,6 +28,7 @@ const messages: Message[] = [
     id: "id_2",
     text: "text_2",
     userId: "userId_2",
+    roomId: "room_2",
     userName: "userName_2",
     date: new Date(2023, 1, 3, 15, 5, 5)
   }
