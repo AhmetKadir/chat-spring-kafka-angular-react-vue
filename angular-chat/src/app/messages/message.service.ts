@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Message } from './message.interface';
-import { map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
-import { lastValueFrom } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Message} from './message.interface';
+import {map} from 'rxjs/operators';
+import {environment} from '../../environments/environment';
+import {lastValueFrom} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,8 @@ import { lastValueFrom } from 'rxjs';
 export class MessageService {
   private server = environment.server;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   // Get all messages (might not be needed anymore with room-based system)
   getMessages(): Promise<Message[]> {
@@ -20,7 +21,7 @@ export class MessageService {
         map((messages: Message[]) =>
           messages.map(message => ({
             ...message,
-            date: new Date(message.date)
+            createdDate: new Date(message.createdDate)
           }))
         )
       )
@@ -34,7 +35,7 @@ export class MessageService {
         map((messages: Message[]) =>
           messages.map(message => ({
             ...message,
-            date: new Date(message.date)
+            createdDate: new Date(message.createdDate)
           }))
         )
       )
@@ -47,4 +48,12 @@ export class MessageService {
       this.http.post<Message>(`${this.server}/messages/new`, message)
     );
   }
+
+  // leave room
+  leaveRoom(userId: string, roomId: string): Promise<any> {
+    return lastValueFrom(
+      this.http.delete(`${this.server}/users/${userId}/rooms/${roomId}`)
+    );
+  }
+
 }

@@ -1,41 +1,48 @@
-<div>messages works</div>
+<div class="page-wrapper">
 
-<div class="message-component" data-cy="message-component">
-  <!-- Messages list -->
-  <div #scroll class="message-container" [scrollTop]="scroll.scrollHeight">
-    <div class="messages">
-      <div *ngFor="let message of messages"
-           class="message"
-           [ngClass]="{
-             'current-user': isCurrentUser(message.userId),
-             'other-user': !isCurrentUser(message.userId)
-           }"
-           data-cy="message">
+  <!--  header section -->
+  <section class="messages-header">
+    <h2 class="section-title">Room: {{ room?.name || 'Loading...' }}</h2>
+    <p class="user-greeting">Welcome, {{ user?.name || 'Guest' }}!</p>
+    <button
+      type="button"
+      (click)="leaveRoom()"
+      class="btn-leave"
+      aria-label="Leave room">
+      Leave Room
+    </button>
+  </section>
+
+  <!--  messages section -->
+  <div class="messages-container" #scroll>
+    <div class="messages-list">
+      <div
+        *ngFor="let message of messages"
+        class="message"
+        [ngClass]="{'current-user': isCurrentUser(message.userId), 'other-user': !isCurrentUser(message.userId)}"
+        data-cy="message">
         <div class="bubble">
-          <!-- Username (only for other users) -->
-          <div *ngIf="!isCurrentUser(message.userId)" class="user-name">
-            {{ message.userName }}
-          </div>
-
-          <!-- Message content and time -->
+          <div *ngIf="!isCurrentUser(message.userId)" class="user-name">{{ message.userName }}</div>
           <div class="message-content">
             <span class="message-text">{{ message.text }}</span>
             <span class="message-date">
-              {{ message.date | date: (isToday(message.date) ? 'HH:mm' : 'dd MMM yyyy') }}
+              {{ message.createdDate | date: (isToday(message.createdDate) ? 'HH:mm' : 'dd MMM yyyy') }}
             </span>
           </div>
         </div>
       </div>
+      <div *ngIf="messages.length === 0" class="no-messages">
+        <p>No messages yet. Start the conversation!</p>
+      </div>
     </div>
   </div>
 
-  <!-- Message input form -->
+  <!--  message form -->
   <form (ngSubmit)="send()" class="message-form" data-cy="message-form">
     <input
-      #messageInput
       [formControl]="messageControl"
       type="text"
-      placeholder="Write your message..."
+      placeholder="Type your message..."
       class="message-input"
       aria-label="Message input">
     <button
@@ -46,4 +53,5 @@
       Send
     </button>
   </form>
+
 </div>

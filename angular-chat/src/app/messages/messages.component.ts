@@ -1,58 +1,91 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { MessageService } from './message.service';
-import { Message } from './message.interface';
-import { User } from '../user/user.interface';
-import { environment } from '../../environments/environment';
-import { Client } from '@stomp/stompjs';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MessageService} from './message.service';
+import {UserService} from '../user/user.service';
+import {Message} from './message.interface';
+import {User} from '../user/user.interface';
+import {environment} from '../../environments/environment';
+import {Client} from '@stomp/stompjs';
+import {CommonModule, DatePipe} from '@angular/common';
+import {Room} from "../rooms/room";
+import {RoomService} from "../rooms/room.service";
 
 @Component({
-    selector: 'app-messages',
-    templateUrl: './messages.component.html',
-    styleUrls: ['./messages.component.scss'],
-    standalone: false
+  selector: 'app-messages',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, DatePipe, FormsModule],
+  templateUrl: './messages.component.html',
+  styleUrls: ['./messages.component.scss']
 })
 export class MessagesComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() user: User;
-
-  @ViewChild('messageInput') messageInput: ElementRef;
+  @ViewChild('scroll') scrollContainer: ElementRef;
 
   messages: Message[] = [];
-  messageControl = new FormControl<string>('', { nonNullable: true });
+  messageControl = new FormControl<string>('', {nonNullable: true});
   websocketClient: Client;
-  private roomId: string;
+  protected roomId: string | null = null;
+  room: Room | null = null;
+  user: User | null = null;
+
+  private hasLeftRoom: boolean = false;
 
   constructor(
     private messageService: MessageService,
-    private route: ActivatedRoute
-  ) {}
+    private userService: UserService,
+    private roomService: RoomService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {
+  }
 
   ngOnInit(): void {
-    this.roomId = this.route.snapshot.paramMap.get('roomId');
-    if (!this.roomId) {
-      console.error('No room ID provided');
+    this.user = this.userService.getCurrentUser();
+    if (!this.user) {
+      alert('Please log in');
+      void this.router.navigate(['/login']);
       return;
     }
 
-    this.messageService.getMessagesByRoomId(this.roomId)
-      .then((messages: Message[]) => {
-        this.messages = messages.map(msg => ({
-          ...msg,
-          date: new Date(msg.date)
-        }));
-      })
-      .catch(error => console.error('Error loading messages:', error));
+    this.roomId = this.route.snapshot.paramMap.get('roomId');
+    if (!this.roomId) {
+      console.error('No room ID provided');
+      void this.router.navigate(['/rooms']);
+      return;
+    }
 
+    this.roomService.getRoomById(this.roomId).then(room => {
+      this.room = room;
+    });
+
+    this.loadMessages().then(() => console.log('Messages loaded'));
     this.connect();
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.messageInput?.nativeElement.focus(), 0);
+    this.scrollToBottom();
   }
 
   ngOnDestroy(): void {
-    this.disconnect();
+    if (!this.hasLeftRoom) {
+      void this.leaveRoom();
+    }
+  }
+
+  private async loadMessages(): Promise<void> {
+    try {
+      console.log('Loading messages for room', this.roomId);
+      const messages = await this.messageService.getMessagesByRoomId(this.roomId!);
+      this.messages = messages.map(msg => ({
+        ...msg,
+        createdDate: new Date(msg.createdDate)
+      }));
+      console.log('Messages loaded:', this.messages);
+      this.scrollToBottom();
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
   }
 
   private connect(): void {
@@ -63,21 +96,28 @@ export class MessagesComponent implements OnInit, OnDestroy, AfterViewInit {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
+      debug: (str) => console.log('WebSocket Debug:', str),
       onConnect: () => {
+        console.log('WebSocket connected to room:', this.roomId);
         this.websocketClient.subscribe(`/chat/${this.roomId}`, (frame) => {
+          console.log('New message received:', frame.body);
           const message: Message = JSON.parse(frame.body);
           this.messages.push({
-            id: message.id,
-            text: message.text,
-            userId: message.userId,
-            userName: message.userName,
-            roomId: message.roomId,
-            date: new Date(message.date)
+            ...message,
+            createdDate: new Date(message.createdDate)
           });
+          this.cdr.detectChanges();
+          this.scrollToBottom();
         });
       },
       onStompError: (frame) => {
         console.error('WebSocket error:', frame);
+      },
+      onDisconnect: () => {
+        console.log('WebSocket disconnected');
+        if (!this.hasLeftRoom) {
+          void this.leaveRoom();
+        }
       }
     });
     this.websocketClient.activate();
@@ -94,16 +134,19 @@ export class MessagesComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!text || !this.roomId || !this.user) return;
 
     const message: Message = {
-      id: '', // Will be set by backend
+      id: '',
       text,
       userId: this.user.id,
-      userName: this.user.name || 'Anonymous', // Assuming User has a name property
+      userName: this.user.name || 'Anonymous',
       roomId: this.roomId,
-      date: new Date()
+      createdDate: new Date()
     };
 
     this.messageService.send(message)
-      .then(() => this.messageControl.reset())
+      .then(() => {
+        this.messageControl.reset();
+        this.scrollToBottom();
+      })
       .catch(error => console.error('Send message error:', error));
   }
 
@@ -116,5 +159,28 @@ export class MessagesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   isCurrentUser(userId: string): boolean {
     return userId === this.user?.id;
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      if (this.scrollContainer) {
+        this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+      }
+    }, 0);
+  }
+
+  async leaveRoom(): Promise<void> {
+    if (!this.user?.id || !this.roomId) return;
+
+    try {
+      this.hasLeftRoom = true;
+      await this.messageService.leaveRoom(this.user.id, this.roomId);
+      this.disconnect();
+    } catch (error) {
+      console.error('Error leaving room:', error);
+      this.disconnect();
+    } finally {
+      void this.router.navigate(['/rooms']);
+    }
   }
 }

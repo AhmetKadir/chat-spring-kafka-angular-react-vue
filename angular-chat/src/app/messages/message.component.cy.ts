@@ -1,16 +1,17 @@
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
-import { MockProvider } from "ng-mocks";
-import { MessageService } from "./message.service";
-import { User } from "../user/user.interface";
-import { MessagesComponent } from "./messages.component";
-import { Message } from "./message.interface";
-import { Subject } from "rxjs";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {CommonModule} from "@angular/common";
+import {MockProvider} from "ng-mocks";
+import {MessageService} from "./message.service";
+import {User} from "../user/user.interface";
+import {MessagesComponent} from "./messages.component";
+import {Message} from "./message.interface";
+import {Subject} from "rxjs";
 
 
-import { MountResponse } from "cypress/angular";
+import {MountResponse} from "cypress/angular";
 
 const user: User = {
+  roomId: "",
   name: "michael",
   id: "user_1"
 };
@@ -22,7 +23,7 @@ const messages: Message[] = [
     userId: user.id,
     roomId: "room_1",
     userName: user.name,
-    date: new Date(2023, 1, 2, 15, 5, 5)
+    createdDate: undefined
   },
   {
     id: "id_2",
@@ -30,7 +31,7 @@ const messages: Message[] = [
     userId: "userId_2",
     roomId: "room_2",
     userName: "userName_2",
-    date: new Date(2023, 1, 3, 15, 5, 5)
+    createdDate: undefined
   }
 ];
 let websocketMessage: Subject<string>;
@@ -78,7 +79,7 @@ describe("Message component", () => {
       const userName = $messageElement[0].querySelector(".user-name")?.textContent.trim();
       const date = $messageElement[0].querySelector(".message-date").textContent.trim();
       const text: string = $messageElement[0].querySelector(".text").textContent.trim();
-      actualMessage.push({ userName, date, text });
+      actualMessage.push({userName, date, text});
     }).then(() => {
       expect(actualMessage).to.deep.equal([
         {

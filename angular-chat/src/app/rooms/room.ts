@@ -7,5 +7,5 @@ export interface Room {
   numberOfUsers: number;
   createdDate: Date;
 
-  ROOM_CAPACITY: number;
+  roomCapacity: number;
 }

@@ -1,18 +1,18 @@
-import { AppComponent } from "./app.component";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
-import { UserService } from "./user/user.service";
-import { MessagesComponent } from "./messages/messages.component";
-import { MockComponent, MockProvider } from "ng-mocks";
-import { User } from "./user/user.interface";
+import {AppComponent} from "./app.component";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {CommonModule} from "@angular/common";
+import {MessagesComponent} from "./messages/messages.component";
+import {MockComponent} from "ng-mocks";
+import {User} from "./user/user.interface";
 
 const user: User = {
+  roomId: "",
   name: "michael",
   id: "some-id"
 };
 
 const imports = [CommonModule, FormsModule, ReactiveFormsModule];
-const providers = [MockProvider(UserService, { getUser: () => Promise.resolve(user) })];
+const providers = [];
 const config = {
   providers,
   imports,

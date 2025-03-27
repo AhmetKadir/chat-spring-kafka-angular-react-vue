@@ -4,5 +4,5 @@ export interface Message {
   userId: string;
   userName: string;
   roomId: string;
-  date: Date;
+  createdDate: Date;
 }

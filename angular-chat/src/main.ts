@@ -1,12 +1,20 @@
-import {enableProdMode} from '@angular/core';
-import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import {bootstrapApplication} from '@angular/platform-browser';
+import {provideRouter} from '@angular/router';
+import {provideHttpClient} from '@angular/common/http';
+import {AppComponent} from './app/app.component';
+import {LoginComponent} from './app/login/login.component';
+import {RoomsComponent} from './app/rooms/rooms.component';
+import {MessagesComponent} from './app/messages/messages.component';
 
-import {AppModule} from '../../angular-chat/src/app/app.module';
-import {environment} from '../../angular-chat/src/environments/environment';
-
-if (environment.production) {
-  enableProdMode();
-}
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter([
+      {path: 'login', component: LoginComponent},
+      {path: 'rooms', component: RoomsComponent},
+      {path: 'messages/:roomId', component: MessagesComponent},
+      {path: '', redirectTo: 'login', pathMatch: 'full'},
+      {path: '**', redirectTo: 'login'}
+    ]),
+    provideHttpClient()
+  ]
+}).catch(err => console.error(err));
