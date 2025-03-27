@@ -7,9 +7,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.util.Date;
-
 @Component
 public class KafkaEventHandler {
 
@@ -29,7 +26,10 @@ public class KafkaEventHandler {
                 .setText(messageAvro.getText().toString())
                 .setRoomId(messageAvro.getRoomId().toString())
                 .setCreatedDate(messageAvro.getCreatedDate());
-        template.convertAndSend("/chat", message);
+
+        String destination = "/chat/" + message.getRoomId();
+        template.convertAndSend(destination, message);
+        System.out.println("Message sent to topic: " + destination);
     }
 
 }

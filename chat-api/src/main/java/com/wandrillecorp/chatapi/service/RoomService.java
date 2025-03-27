@@ -28,6 +28,7 @@ public class RoomService {
     }
 
     public ResponseEntity<User> createRoom(String userId, String roomName) {
+        // todo room name max length check
         Room room = new Room()
                 .setName(roomName)
                 .setCreatedDate(Instant.now())

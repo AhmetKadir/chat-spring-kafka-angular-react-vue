@@ -38,7 +38,7 @@ public class UserService {
         if (room == null) {
             return ResponseEntity.notFound().build();
         }
-        if (room.getNumberOfUsers() >= Room.ROOM_CAPACITY) {
+        if (room.getNumberOfUsers() >= room.getRoomCapacity()) {
             return ResponseEntity.badRequest().build();
         }
         User user = userRepository.findById(userId).orElse(null);
@@ -47,6 +47,24 @@ public class UserService {
             roomRepository.save(room);
 
             user.setRoomId(roomId);
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    public ResponseEntity<User> leaveRoom(String userId, String roomId) {
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if (room == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null && user.getRoomId().equals(roomId)) {
+            room.decrementNumberOfUsers();
+            roomRepository.save(room);
+
+            user.setRoomId(null);
             userRepository.save(user);
             return ResponseEntity.ok(user);
         } else {

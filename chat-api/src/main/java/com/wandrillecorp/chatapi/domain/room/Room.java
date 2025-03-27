@@ -11,16 +11,15 @@ import java.time.Instant;
 @Accessors(chain = true)
 public class Room implements Serializable {
 
-    public static final Integer ROOM_CAPACITY = 5;
-
     @Id
     private String id;
     private String name;
     private Instant createdDate;
     private Integer numberOfUsers = 0;
+    private Integer roomCapacity = 5;
 
     public void incrementNumberOfUsers() {
-        if (this.numberOfUsers < ROOM_CAPACITY)
+        if (this.numberOfUsers < roomCapacity)
             this.numberOfUsers++;
     }
 

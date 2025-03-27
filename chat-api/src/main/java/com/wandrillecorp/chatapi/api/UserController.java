@@ -1,10 +1,9 @@
 package com.wandrillecorp.chatapi.api;
 
+import com.wandrillecorp.chatapi.domain.user.User;
 import com.wandrillecorp.chatapi.dto.UserCreateDto;
 import com.wandrillecorp.chatapi.service.UserService;
-import com.wandrillecorp.chatapi.domain.user.User;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +33,11 @@ public class UserController {
     public ResponseEntity<User> enterRoom(@PathVariable String userId,
                                           @PathVariable String roomId) {
         return userService.enterRoom(userId, roomId);
+    }
+
+    @DeleteMapping("/{userId}/rooms/{roomId}")
+    public ResponseEntity<User> leaveRoom(@PathVariable String userId,
+                                          @PathVariable String roomId) {
+        return userService.leaveRoom(userId, roomId);
     }
 }
