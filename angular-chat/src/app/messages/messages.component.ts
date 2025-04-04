@@ -1,4 +1,13 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MessageService} from './message.service';
@@ -67,9 +76,10 @@ export class MessagesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.scrollToBottom();
   }
 
-  ngOnDestroy(): void {
+  @HostListener('window:beforeunload')
+  async ngOnDestroy() {
     if (!this.hasLeftRoom) {
-      void this.leaveRoom();
+      await this.leaveRoom();
     }
   }
 
