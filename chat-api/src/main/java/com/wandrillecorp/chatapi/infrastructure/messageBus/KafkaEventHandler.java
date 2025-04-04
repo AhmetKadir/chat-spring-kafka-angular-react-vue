@@ -29,7 +29,6 @@ public class KafkaEventHandler {
 
         String destination = "/chat/" + message.getRoomId();
         template.convertAndSend(destination, message);
-        System.out.println("Message sent to topic: " + destination);
     }
 
 }
